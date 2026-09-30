@@ -1,0 +1,63 @@
+name: Build dashboard
+
+on:
+  schedule:
+    - cron: "17 5 * * *"      # daily at ~05:17 UTC (06:17 UK summer time)
+  workflow_dispatch:           # adds a "Run workflow" button on the Actions tab
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: dashboard
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Build dashboard
+        run: python build_dashboard.py --out site/index.html
+        env:
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+
+      # Always keep a private, downloadable copy on the workflow run page
+      # (self-contained, so it opens offline).
+      - name: Build offline copy
+        run: python build_dashboard.py --inline-js --out offline/dashboard.html
+        env:
+          PROJECT_TOKEN: ${{ secrets.PROJECT_TOKEN }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dashboard
+          path: offline/dashboard.html
+          retention-days: 14
+
+      # Package the page for GitHub Pages (used by the deploy job below).
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  # Publishes to https://<your-username>.github.io/<this-repo>/
+  # Delete this whole job if you don't want a Pages site (see README).
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
