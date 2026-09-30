@@ -36,10 +36,8 @@ from plotly.subplots import make_subplots
 # Who owns the "Research Tasks" project: "user" for a personal account,
 # "organization" for an organisation.
 OWNER_TYPE = "user"
-OWNER_LOGIN = "YOUR-GITHUB-USERNAME"
-# The number at the end of the project's URL, e.g.
-#   https://github.com/users/YOUR-GITHUB-USERNAME/projects/3   ->   3
-PROJECT_NUMBER = 0
+OWNER_LOGIN = "aneeshnaik"
+PROJECT_NUMBER = 1
 
 # Field names, exactly as they appear in the project.
 FIELD_STATUS = "Status"
