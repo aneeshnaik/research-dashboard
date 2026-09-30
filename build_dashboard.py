@@ -65,7 +65,7 @@ HOURS_RANGE = {1: (0, 1), 2: (1, 2), 3: (2, 3), 4: (3, 4), 5: (4, 5)}
 #   "status": when the Status field was last changed (i.e. set to Done),
 #             falling back to the issue's closed date if that's missing
 #   "closed": the issue's closed date, falling back to the Status change
-COMPLETION_DATE_SOURCE = "status"
+COMPLETION_DATE_SOURCE = "closed"
 
 TIMEZONE = "Europe/London"   # decides which calendar day/week a task counts towards
 DEADLINE_WINDOW_DAYS = 14    # "due soon" window on the headline cards
